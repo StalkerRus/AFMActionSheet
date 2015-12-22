@@ -63,7 +63,7 @@ public class AFMActionSheetController: UIViewController {
     private func setupViews() {
         self.view.addSubview(self.actionGroupView)
         self.view.addSubview(self.cancelGroupView)
-        self.setupGroupViews()
+        self.setupGroupViews(actionGroup: self.actionGroupView, cancelGroup: self.cancelGroupView)
 
         let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "recognizeGestures:")
         swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
@@ -153,7 +153,7 @@ public class AFMActionSheetController: UIViewController {
 
     // MARK: Control positioning
 
-    private func setupGroupViews() {
+    public func setupGroupViews(actionGroup actionGroup: UIView, cancelGroup: UIView) {
         let setupGroupView: UIView -> Void = { groupView in
             groupView.clipsToBounds = true
             groupView.layer.cornerRadius = CGFloat(self.cornerRadius)
@@ -165,13 +165,13 @@ public class AFMActionSheetController: UIViewController {
             )
         }
 
-        setupGroupView(self.actionGroupView)
-        setupGroupView(self.cancelGroupView)
+        setupGroupView(actionGroup)
+        setupGroupView(cancelGroup)
 
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=margin)-[actionGroupView]-margin-[cancelGroupView]-margin-|",
             options: .DirectionLeadingToTrailing,
             metrics: ["margin": self.verticalMargin],
-            views: ["actionGroupView": self.actionGroupView, "cancelGroupView": self.cancelGroupView])
+            views: ["actionGroupView": actionGroup, "cancelGroupView": cancelGroup])
         )
     }
 
@@ -226,7 +226,7 @@ public class AFMActionSheetController: UIViewController {
 
     private func updateUI() {
         self.view.removeConstraints(self.view.constraints)
-        self.setupGroupViews()
+        self.setupGroupViews(actionGroup: self.actionGroupView, cancelGroup: self.cancelGroupView)
 
         self.cancelGroupView.removeConstraints(self.cancelControlConstraints)
         self.cancelControlConstraints = self.constraintsForViews(self.cancelControls)
